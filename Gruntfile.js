@@ -529,7 +529,7 @@ module.exports = function (grunt) {
       return grunt.task.run([
         'clean:server',
         'env:all',
-        'injector:sass', 
+        'injector:sass',
         'concurrent:server',
         'injector',
         'bowerInstall',
@@ -541,7 +541,7 @@ module.exports = function (grunt) {
     grunt.task.run([
       'clean:server',
       'env:all',
-      'injector:sass', 
+      'injector:sass',
       'concurrent:server',
       'injector',
       'bowerInstall',
@@ -558,51 +558,51 @@ module.exports = function (grunt) {
     grunt.task.run(['serve']);
   });
 
-  grunt.registerTask('test', function(target) {
-    if (target === 'server') {
-      return grunt.task.run([
-        'env:all',
-        'env:test',
-        'mochaTest'
-      ]);
-    }
+  // grunt.registerTask('test', function(target) {
+  //   if (target === 'server') {
+  //     return grunt.task.run([
+  //       'env:all',
+  //       'env:test',
+  //       'mochaTest'
+  //     ]);
+  //   }
 
-    else if (target === 'client') {
-      return grunt.task.run([
-        'clean:server',
-        'env:all',
-        'injector:sass', 
-        'concurrent:test',
-        'injector',
-        'autoprefixer',
-        'karma'
-      ]);
-    }
+  //   else if (target === 'client') {
+  //     return grunt.task.run([
+  //       'clean:server',
+  //       'env:all',
+  //       'injector:sass',
+  //       'concurrent:test',
+  //       'injector',
+  //       'autoprefixer',
+  //       'karma'
+  //     ]);
+  //   }
 
-    else if (target === 'e2e') {
-      return grunt.task.run([
-        'clean:server',
-        'env:all',
-        'env:test',
-        'injector:sass', 
-        'concurrent:test',
-        'injector',
-        'bowerInstall',
-        'autoprefixer',
-        'express:dev',
-        'protractor'
-      ]);
-    }
+  //   else if (target === 'e2e') {
+  //     return grunt.task.run([
+  //       'clean:server',
+  //       'env:all',
+  //       'env:test',
+  //       'injector:sass',
+  //       'concurrent:test',
+  //       'injector',
+  //       'bowerInstall',
+  //       'autoprefixer',
+  //       'express:dev',
+  //       'protractor'
+  //     ]);
+  //   }
 
-    else grunt.task.run([
-      'test:server',
-      'test:client'
-    ]);
-  });
+  //   else grunt.task.run([
+  //     'test:server',
+  //     'test:client'
+  //   ]);
+  // });
 
   grunt.registerTask('build', [
     'clean:dist',
-    'injector:sass', 
+    'injector:sass',
     'concurrent:dist',
     'injector',
     'bowerInstall',
@@ -621,7 +621,6 @@ module.exports = function (grunt) {
 
   grunt.registerTask('default', [
     'newer:jshint',
-    'test',
     'build'
   ]);
 };
