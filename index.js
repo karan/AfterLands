@@ -53,8 +53,7 @@ io.sockets.on('connection', function (socket) {
     socket.partyRoom = room_id;
     socket.join(room_id);
     routes.userIncrease(room_id, function(room) {
-      io.to(socket.id).emit('userAdded', room);
-      // io.sockets.in(room_id).emit('userAdded', room);
+      io.sockets.in(room_id).emit('userAdded', room);
     });
   });
 
