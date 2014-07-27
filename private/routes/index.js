@@ -16,7 +16,7 @@ exports.makeRoom = function(req, res) {
     mood: '',
     songs: [],
     location: { 'lat': +req.body.lat, 'lon': +req.body.lon },
-    num_people: 1
+    num_people: 0
   });
 
   newRoom.save(function(err, nr) {
@@ -95,9 +95,11 @@ exports.userIncrease = function(room_id, callback) {
   });
 }
 
-exports.userDecrease = function(room_id) {
+exports.userDecrease = function(room_id, callback) {
   Room.findById(room_id, function(err, room) {
     room.num_people -= 1;
-    room.save(function(err, r) {});
+    room.save(function(err, r) {
+      callback(r);
+    });
   });
 }
