@@ -12,7 +12,7 @@ var roomSchema = new Schema({
     type: Date,
     default: Date.now
   },
-  name: String,
+  room_name: String,
   active: Boolean,
   mood: String,
   songs: Object,  // list of Rdio song objects

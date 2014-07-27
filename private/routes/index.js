@@ -11,7 +11,7 @@ exports.index = function (req, res){
 // Make a new room
 exports.makeRoom = function(req, res) {
   var newRoom = new Room({
-    name: req.body.room_name,
+    room_name: req.body.room_name,
     active: true,
     mood: '',
     songs: [],
@@ -77,7 +77,7 @@ exports.addSong = function(req, res) {
 
 // search for a song on Rdio
 exports.searchSong = function(req, res) {
-  var query = req.params.query;
+  var query = req.query.query;
   require('./../helpers/rdio.js').search(query, function(results) {
     res.send(200, results);
   });
@@ -96,6 +96,7 @@ exports.getRoom = function(req, res) {
 
 exports.userIncrease = function(room_id, callback) {
   Room.findById(room_id, function(err, room) {
+    if (!room) return callback(null);
     room.num_people += 1;
     room.save(function(err, r) {
       callback(r);
@@ -105,6 +106,7 @@ exports.userIncrease = function(room_id, callback) {
 
 exports.userDecrease = function(room_id, callback) {
   Room.findById(room_id, function(err, room) {
+    if (!room) return callback(null);
     room.num_people -= 1;
     room.save(function(err, r) {
       callback(r);
