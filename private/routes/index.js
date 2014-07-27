@@ -1,198 +1,63 @@
 var request = require('request');
 var async = require('async');
+var Room = require('./../models/room');
+var Constants = require('./../constants');
 
 exports.index = function (req, res){
-  if (req.isAuthenticated()) {
-    return res.render('index', {user: req.user, userString: JSON.stringify(req.user)});
-  } else {
-    return res.render('index');
-  }
-};
-
-exports.authError = function(req, res) {
-  res.redirect('/');
-};
-
-exports.authSuccess = function(req, res) {
-  res.redirect('/');
+  return res.render('index');
 };
 
 // Main functions
 
-// get details for logged in user
-exports.getUser = function(req, res) {
-  if (req.isAuthenticated()) {
-    ProblemSession.find({ $or:[ {user1: req.user.id}, {user2: req.user.id} ]},
-      function(err, ps) {
-        req.user.problems_solved = ps.length;
-        req.user.save(function(err, u) {
-          return res.send(200, u);
-        });
-    });
-  } else {
-    return res.send(401, {});
-  }
-};
+// Make a new room
+exports.makeRoom = function(req, res) {
+  var newRoom = new Room({
+    name: req.body.room_name,
+    active: true,
+    mood: '',
+    songs: [],
+    location: { 'lat': +req.body.lat, 'lon': +req.body.lon }
+  });
 
+  newRoom.save(function(err, nr) {
+    res.send(200, nr);
+  });
+}
 
-function getFriends(user, callback) {
-  request('https://graph.facebook.com/me/friends?limit=1000&access_token=' + user.accessToken,
-    function(err, resp, body) {
-      body = JSON.parse(body);
-      user.friends = body.data;
-      user.save(function(err, newUser) {
-        callback(newUser);
+// get rooms near a location
+exports.getAllNear = function(req, res) {
+  var lat = +req.params.lat;
+  var lon = +req.params.lon;
+
+  Room.find(function(err, rooms) {
+    if (err) {
+      return res.send(500, {
+        'response': 'fail',
+        'errors': 'Something went wrong. Please try again later.'
       });
-    });
-}
-
-function nextRandomProblem(callback) {
-  Problem.find({}, function(err, docs) {
-    callback(docs[Math.floor(Math.random()*docs.length)]);
-  });
-}
-
-function commonPs(reqUser, thisFriend, randProblem, callback) {
-  ProblemSession.findOne({ $or:[
-      {problem: randProblem.id, user1: reqUser.id, user2: thisFriend.id},
-      {problem: randProblem.id, user1: thisFriend.id, user2: reqUser.id}
-    ]}, function(err, ps) {
-      callback(ps);
-    });
-}
-
-function savePs(randProblem, reqUser, thisFriend, callback) {
-  new ProblemSession({
-    problem: randProblem.id,
-    user1: reqUser.id,
-    user2: thisFriend.id,
-    user_solution: '',
-    connected: false  // DEBUG: SET IT TO TRUE
-  }).save(function(err, newPS) {
-    callback(newPS);
-  });
-}
-
-function processAndServePs(reqUser, friends, randProblem, callback) {
-  (function checkOne() {
-    var thisFriend = friends.splice(0, 1)[0];
-    if (thisFriend.id !== reqUser.id) {
-      // commonPs(reqUser, thisFriend, randProblem, function(ps) {
-          // ps is the problem session where both users solved this problem
-          // if (!ps) {
-            savePs(randProblem, reqUser, thisFriend, function(newPS) {
-              return_struct = {'problem': randProblem,
-                               'users': [reqUser, thisFriend],
-                               'problemsession': newPS.id};
-
-              if (return_struct != {}) {
-                callback(return_struct);
-              } else {
-                checkOne();
-              }
-            });
-          // } else {
-            // callback({});
-          // }
-      // });
     }
-  })();
-}
 
+    var result = [];
 
-exports.startSession = function(req, res) {
-  var option = req.query.option;
+    for (var i = 0; i < rooms.length; i++) {
+      var curRoom = rooms[i].toObject();
+      var distance = require('./../helpers/distance.js').getDistanceFromLatLonInM(
+        lat, lon,
+        curRoom.location.lat, curRoom.location.lon);
 
-  if (option === 'friend') {
-
-    getFriends(req.user, function(user){
-      Friends.getOnlineFriends(user.friends, function(friends) {
-        // friends are users who are signed up, online and friends
-        friends = require('./../helpers/shuffle').shuffle(friends);
-        console.log("got friends = " + friends.length);
-        nextRandomProblem(function(randProblem) {
-          // DEBUG
-          // randProblem = {'problem': 'abc', 'id': '123'};
-          // DEBUG
-          processAndServePs(req.user, friends, randProblem, function(ps) {
-            console.log("in cb = " + ps);
-            return res.send(ps);
-          });
-        });
-      });
-    });
-
-  } else {
-
-    User.find({}, function(err, users) {
-      users = require('./../helpers/shuffle').shuffle(users);
-      console.log("users =  " + users.length);
-      nextRandomProblem(function(randProblem) {
-        // DEBUG
-        // randProblem = {'problem': 'abc', 'id': '123'};
-        // DEBUG
-        processAndServePs(req.user, users, randProblem, function(ps) {
-          return res.send(ps);
-        });
-      });
-    });
-
-  }
-
-}
-
-
-exports.finalizeSession = function(req, res) {
-  var user_solution = req.body.user_solution;
-  var score = req.body.score;
-  var psId = req.body.problem_session;
-
-  ProblemSession.findById(psId, function(err, problemSession) {
-    if (err) res.send(500);
-    problemSession.user_solution = user_solution;
-    problemSession.connected = false;
-    problemSession.save(function(err, ps) {
-      if (err) res.send(500);
-      User.findById(ps.user1, function(err, user1) {
-        if (err) res.send(500);
-        User.findById(ps.user2, function(err, user2) {
-          if (err) res.send(500);
-          user1.score += score;
-          user2.score += score;
-          user1.save(function(err, u) {
-            user2.save(function(err, u) {
-              res.send(200, 'ok')
-            });
-          });
-        });
-      });
-    });
-  });
-}
-
-
-exports.setOnline = function (userId, isOnline, callback) {
-  User.update({'_id' : userId}, {online: isOnline}, function () {
-    if (callback) {
-      callback();
+      if (distance <= Constants.maxDistance) {
+        console.log(distance);
+        curRoom["distance"] = distance;
+        result.push(curRoom);
+      }
     }
+
+    res.send(200, {
+      'response': 'ok',
+      'rooms': result
+    });
+
   });
 };
 
 
-// get all users for the leaderboard
-exports.leaderboard = function(req, res) {
-  User.find({}, function(err, users) {
-    async.mapLimit(users, 20, function(user, cb) {
-      ProblemSession.find({ $or:[ {user1: user.id}, {user2: user.id} ]},
-        function(err, ps) {
-          user.problems_solved = ps.length;
-          user.save(function(err, u) {
-            cb(null, u);
-          });
-      });
-    }, function (err, results) {
-      res.send(200, results);
-    });
-  });
-}

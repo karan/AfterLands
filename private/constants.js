@@ -1,5 +1,6 @@
 var Constants = {
-  MONGOLAB_URI: 'mongodb://heroku_app27593770:si9agmbohbtdia6lh6nq2lqk9o@ds043467.mongolab.com:43467/heroku_app27593770'
+  MONGOLAB_URI: 'mongodb://heroku_app27834486:met3h9hh26b262843deh916e6d@ds053469.mongolab.com:53469/heroku_app27834486',
+  maxDistance: 3000  // distance in metres
 }
 
 module.exports = Constants;

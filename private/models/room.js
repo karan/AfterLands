@@ -15,11 +15,10 @@ var roomSchema = new Schema({
   name: String,
   active: Boolean,
   mood: String,
-  owner: User,
   songs: [String],
   location: {
-    'lat': String,
-    'lon': String
+    'lat': Number,
+    'lon': Number
   }
 });
 
