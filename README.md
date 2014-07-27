@@ -51,3 +51,12 @@ Required params:
 `GET /search?query=XXXXXXX`
 
 Returns a list of Rdio songs
+
+## Sockets Messages
+
+### Client to Server
+
+#### Join user to a room: `joinRoom`
+
+Pass `room_id`.
+

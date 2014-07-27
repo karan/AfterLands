@@ -15,7 +15,8 @@ exports.makeRoom = function(req, res) {
     active: true,
     mood: '',
     songs: [],
-    location: { 'lat': +req.body.lat, 'lon': +req.body.lon }
+    location: { 'lat': +req.body.lat, 'lon': +req.body.lon },
+    num_people: 1
   });
 
   newRoom.save(function(err, nr) {
@@ -71,10 +72,27 @@ exports.addSong = function(req, res) {
   });
 }
 
-
+// search for a song on Rdio
 exports.searchSong = function(req, res) {
   var query = req.params.query;
   require('./../helpers/rdio.js').search(query, function(results) {
     res.send(200, results);
+  });
+}
+
+
+// Handlers for socket
+
+exports.userIncrease = function(room_id) {
+  Room.findById(room_id, function(err, room) {
+    room.num_people += 1;
+    room.save(function(err, r) {});
+  });
+}
+
+exports.userDecrease = function(room_id) {
+  Room.findById(room_id, function(err, room) {
+    room.num_people -= 1;
+    room.save(function(err, r) {});
   });
 }

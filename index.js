@@ -42,53 +42,42 @@ app.post('/addsong', routes.addSong);
 app.get('/search', routes.searchSong);
 
 var server = http.createServer(app);
-// // Connect to socket
-// var io = require('socket.io')(server);
-// var Room = require('./private/models/room');
+// Connect to socket
+var io = require('socket.io')(server);
+var Room = require('./private/models/room');
 
-// io.sockets.on('connection', function (socket) {
+io.sockets.on('connection', function (socket) {
 
-//   socket.on('joinRoom', function(room) {
-//     console.log("connecting to room " + room);
-//     socket.join(room);
-//     // User.findById(room, function(err, u) {
-//     //   socket.user = u;
-//     //   routes.setOnline(u._id, true);
-//     // });
-//   });
+  socket.on('joinRoom', function(room_id) {
+    console.log("connecting to room " + room);
+    socket.partyRoom = room_id;
+    socket.join(room_id);
+    routes.userIncrease(room_id);
+  });
 
 
-//   // Sets up the user data
-//   socket.on('sessionConnected', function (game, mode) {
-//     console.log("connecting to other person " + JSON.stringify(game));
-//     ProblemSession.findById(game.problemsession, function(err, ps) {
-//       console.log("emit to other client");
-//       ps.connected = true;
-//       ps.save(function(err, ps) {
-//         io.sockets.in(ps.user2).emit('connectToGame', game, mode);
-//       });
-//     });
-//   });
+  // Sets up the user data
+  // socket.on('sessionConnected', function (game, mode) {
+  //   console.log("connecting to other person " + JSON.stringify(game));
+  //   ProblemSession.findById(game.problemsession, function(err, ps) {
+  //     console.log("emit to other client");
+  //     ps.connected = true;
+  //     ps.save(function(err, ps) {
+  //       io.sockets.in(ps.user2).emit('connectToGame', game, mode);
+  //     });
+  //   });
+  // });
 
-//   socket.on('runTests', function (game, id) {
-//     console.log(id);
-//     for (var i = 0; i < game.users.length; ++i) {
-//       if (game.users[i]._id !== id) {
-//         console.log("in loop: " + game.users[i]._id);
-//         io.sockets.in(game.users[i]._id).emit('runMyTests');
-//       }
-//     }
-//   });
 
-//   socket.on('disconnect', function () {
-//     var userData = socket.user;
-//     console.log("disconnect " + userData);
-//     if (userData) {
-//       routes.setOnline(userData._id, false);
-//     }
-//   });
+  socket.on('disconnect', function () {
+    var room_id = socket.partyRoom;
+    console.log("disconnect from" + room_id);
+    if (room_id) {
+      routes.userDecrease(room_id);
+    }
+  });
 
-// });
+});
 
 server.listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));

@@ -19,7 +19,8 @@ var roomSchema = new Schema({
   location: {
     'lat': Number,
     'lon': Number
-  }
+  },
+  num_people: Number
 });
 
 
