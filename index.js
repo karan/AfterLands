@@ -87,9 +87,8 @@ io.sockets.on('connection', function (socket) {
     // });
   });
 
-
-
   socket.on('nextSong', function(room_id) {
+    console.log("NEXTSONG EMITTED");
     io.sockets.in(room_id).emit('nextSong');
   });
 
