@@ -1,5 +1,4 @@
 var request = require('request');
-var async = require('async');
 var Room = require('./../models/room');
 var Constants = require('./../constants');
 
