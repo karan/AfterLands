@@ -15,7 +15,7 @@ var roomSchema = new Schema({
   name: String,
   active: Boolean,
   mood: String,
-  songs: [String],
+  songs: Object,  // list of Rdio song objects
   location: {
     'lat': Number,
     'lon': Number
