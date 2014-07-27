@@ -58,17 +58,6 @@ Returns a list of Rdio songs
 
 Returns the whole room object
 
-#### Add a vote for a song in a room
-
-`POST /vote`
-
-Required params:
-
-`song_key`: Each Rdio song has a `key`.
-`room_id` and `vote` (+1 or -1)
-
-Does not return anything.
-
 ## Sockets Messages
 
 ### Client to Server
@@ -78,3 +67,12 @@ Does not return anything.
 Pass `room_id`.
 
 Emits `userChanged` with the new `room.num_people` to all users in this room
+
+#### Add a vote for a song in a room
+
+Emit `vote` with:
+
+- `song_key`: Each Rdio song has a `key`.
+- `room_id` and `vote` (+1 or -1)
+
+Does not return anything. Emits a `voteChange` message to all client in this room. Also sends the `song_key` and `vote`.
