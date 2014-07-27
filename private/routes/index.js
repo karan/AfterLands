@@ -3,7 +3,7 @@ var Room = require('./../models/room');
 var Constants = require('./../constants');
 
 exports.index = function (req, res){
-  return res.render('index');
+  res.send('AfterLands');
 };
 
 // Main functions
@@ -65,9 +65,12 @@ exports.addSong = function(req, res) {
   var room_id = req.body.room_id;
 
   Room.findById(room_id, function(err, room) {
-    room.songs.push(song);
-    room.save(function(err, r) {
-      res.send(200, r);
+    require('./../helpers/mood.js').getMoods(song.artist, song.album, song.name, function(moods) {
+      song.moods = moods;
+      room.songs.push(song);
+      room.save(function(err, r) {
+        res.send(200, r);
+      });
     });
   });
 }

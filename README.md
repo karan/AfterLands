@@ -60,4 +60,4 @@ Returns a list of Rdio songs
 
 Pass `room_id`.
 
-Emits `userAdded` with the new `room` object to the new user.
+Emits `userAdded` with the new `room` object to all users in this room
