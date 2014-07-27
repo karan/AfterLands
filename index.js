@@ -52,21 +52,11 @@ io.sockets.on('connection', function (socket) {
     console.log("connecting to room " + room);
     socket.partyRoom = room_id;
     socket.join(room_id);
-    routes.userIncrease(room_id);
+    routes.userIncrease(room_id, function(room) {
+      io.to(socket.id).emit('userAdded', room);
+      // io.sockets.in(room_id).emit('userAdded', room);
+    });
   });
-
-
-  // Sets up the user data
-  // socket.on('sessionConnected', function (game, mode) {
-  //   console.log("connecting to other person " + JSON.stringify(game));
-  //   ProblemSession.findById(game.problemsession, function(err, ps) {
-  //     console.log("emit to other client");
-  //     ps.connected = true;
-  //     ps.save(function(err, ps) {
-  //       io.sockets.in(ps.user2).emit('connectToGame', game, mode);
-  //     });
-  //   });
-  // });
 
 
   socket.on('disconnect', function () {

@@ -83,10 +83,12 @@ exports.searchSong = function(req, res) {
 
 // Handlers for socket
 
-exports.userIncrease = function(room_id) {
+exports.userIncrease = function(room_id, callback) {
   Room.findById(room_id, function(err, room) {
     room.num_people += 1;
-    room.save(function(err, r) {});
+    room.save(function(err, r) {
+      callback(r);
+    });
   });
 }
 
