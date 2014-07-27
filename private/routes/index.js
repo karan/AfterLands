@@ -60,4 +60,15 @@ exports.getAllNear = function(req, res) {
   });
 };
 
+// add a song to a room
+exports.addSong = function(req, res) {
+  var song = req.body.song;
+  var room_id = req.body.room_id;
 
+  Room.findById(room_id, function(err, room) {
+    room.songs.push(song);
+    room.save(function(err, r) {
+      res.send(200, r);
+    });
+  });
+}

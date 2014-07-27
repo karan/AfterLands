@@ -35,6 +35,9 @@ app.get('/getallnear/:lat,:lon', routes.getAllNear);
 // Make a new room
 app.post('/make', routes.makeRoom);
 
+// Add a song to a room
+app.post('/addsong', routes.addSong);
+
 
 var server = http.createServer(app);
 // // Connect to socket

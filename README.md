@@ -16,3 +16,12 @@ Required params:
 
 `room_name`: name of the room
 `lat`, `lon`: location of the room
+
+#### Add a song to a room
+
+`POST /addsong`
+
+Required params:
+
+`song`: Rdio song object
+`room_id`: Object ID of the room as in Mongo
