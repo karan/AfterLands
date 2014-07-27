@@ -61,7 +61,7 @@ exports.getAllNear = function(req, res) {
 
 // add a song to a room
 exports.addSong = function(req, res) {
-  var song = req.body.song;
+  var song = JSON.parse(req.body.song);
   var room_id = req.body.room_id;
 
   Room.findById(room_id, function(err, room) {
