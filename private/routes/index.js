@@ -46,7 +46,6 @@ exports.getAllNear = function(req, res) {
         curRoom.location.lat, curRoom.location.lon);
 
       if (distance <= Constants.maxDistance) {
-        console.log(distance);
         curRoom["distance"] = distance;
         result.push(curRoom);
       }
