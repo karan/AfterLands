@@ -73,6 +73,7 @@ exports.addSong = function(req, res) {
         // room.mood = mood;
         room.save(function(err, r) {
           res.send(200, r);
+          res.end();
         });
       // });
     // });

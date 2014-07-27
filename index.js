@@ -81,14 +81,12 @@ io.sockets.on('connection', function (socket) {
   });
 
 
-  socket.on('pause', function(room_id) {
-    io.sockets.in(room_id).emit('pause');
+  socket.on('newSong', function(room_id, song) {
+    // Room.findById(room_id, function(err, room) {
+      io.sockets.in(room_id).emit('newSong', song);
+    // });
   });
 
-
-  socket.on('play', function(room_id) {
-    io.sockets.in(room_id).emit('play');
-  });
 
 
   socket.on('nextSong', function(room_id) {
