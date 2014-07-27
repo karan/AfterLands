@@ -61,20 +61,20 @@ exports.getAllNear = function(req, res) {
 
 // add a song to a room
 exports.addSong = function(req, res) {
-  var song = JSON.parse(req.body.song);
+  var song = JSON.parse(JSON.stringify(req.body.song));
   var room_id = req.body.room_id;
 
   Room.findById(room_id, function(err, room) {
-    require('./../helpers/mood').getMoods(song.artist, song.album, song.name, function(moods) {
-      song.moods = moods;
-      require('./../helpers/mode').mode(moods, function(mood) {
+    // require('./../helpers/mood').getMoods(song.artist, song.album, song.name, function(moods) {
+      // song.moods = moods;
+      // require('./../helpers/mode').mode(moods, function(mood) {
         room.songs.push(song);
-        room.mood = mood;
+        // room.mood = mood;
         room.save(function(err, r) {
           res.send(200, r);
         });
-      });
-    });
+      // });
+    // });
   });
 }
 
