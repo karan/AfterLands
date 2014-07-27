@@ -58,6 +58,17 @@ Returns a list of Rdio songs
 
 Returns the whole room object
 
+#### Add a vote for a song in a room
+
+`POST /vote`
+
+Required params:
+
+`song_key`: Each Rdio song has a `key`.
+`room_id` and `vote` (+1 or -1)
+
+Does not return anything.
+
 ## Sockets Messages
 
 ### Client to Server

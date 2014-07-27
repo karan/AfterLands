@@ -54,6 +54,7 @@ app.get('/search', routes.searchSong);
 // Get details of a room
 app.get('/room/:room_id', routes.getRoom);
 
+
 var server = http.createServer(app);
 // Connect to socket
 var io = require('socket.io')(server);
@@ -70,6 +71,12 @@ io.sockets.on('connection', function (socket) {
     routes.userIncrease(room_id, function(room) {
       if (room)
         io.sockets.in(room_id).emit('userChange', room.num_people);
+    });
+  });
+
+  socket.on('vote', function(song_key, room_id, vote) {
+    routes.addVote(song_key, room_id, vote, function() {
+      io.sockets.in(room_id).emit('voteChange', song_key, vote);
     });
   });
 

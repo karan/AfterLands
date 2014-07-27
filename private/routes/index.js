@@ -62,6 +62,7 @@ exports.getAllNear = function(req, res) {
 // add a song to a room
 exports.addSong = function(req, res) {
   var song = JSON.parse(JSON.stringify(req.body.song));
+  song.votes = 1;
   var room_id = req.body.room_id;
 
   Room.findById(room_id, function(err, room) {
@@ -114,5 +115,19 @@ exports.userDecrease = function(room_id, callback) {
     room.save(function(err, r) {
       callback(r);
     });
+  });
+}
+
+exports.addVote = function(song_key, room_id, vote, callback) {
+
+  Room.findById(room_id, function(err, r) {
+    for (var i = 0; i < r.songs.length; i++) {
+      if (r.songs[i].key === song_key) {
+        r.songs[i].votes += vote;
+        r.save(function(err, rr) {
+          callback();
+        });
+      }
+    }
   });
 }
