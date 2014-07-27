@@ -70,3 +70,11 @@ exports.addSong = function(req, res) {
     });
   });
 }
+
+
+exports.searchSong = function(req, res) {
+  var query = req.params.query;
+  require('./../helpers/rdio.js').search(query, function(results) {
+    res.send(200, results);
+  });
+}

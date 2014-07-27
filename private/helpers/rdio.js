@@ -16,7 +16,7 @@ module.exports.search = function (query, callback) {
       count: 10
   }, function(err, data, response) {
     data = JSON.parse(data);
-    callback(data);
+    callback(data.result.results);
   });
 };
 

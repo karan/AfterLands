@@ -45,3 +45,9 @@ Required params:
 
 `song`: Rdio song object
 `room_id`: Object ID of the room as in Mongo
+
+#### Search for songs
+
+`GET /search?query=XXXXXXX`
+
+Returns a list of Rdio songs

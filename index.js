@@ -38,6 +38,8 @@ app.post('/make', routes.makeRoom);
 // Add a song to a room
 app.post('/addsong', routes.addSong);
 
+// Search for songs on rdio
+app.get('/search', routes.searchSong);
 
 var server = http.createServer(app);
 // // Connect to socket
