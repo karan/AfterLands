@@ -83,6 +83,14 @@ exports.searchSong = function(req, res) {
   });
 }
 
+// returns the room object as defined by room id
+exports.getRoom = function(req, res) {
+  var room_id = req.params.room_id;
+  Room.findById(room_id, function(err, room) {
+    res.send(200, room);
+  });
+}
+
 
 // Handlers for socket
 

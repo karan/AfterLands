@@ -52,6 +52,12 @@ Required params:
 
 Returns a list of Rdio songs
 
+#### Get details of a room
+
+`GET /room/:room_id`
+
+Returns the whole room object
+
 ## Sockets Messages
 
 ### Client to Server
@@ -60,4 +66,4 @@ Returns a list of Rdio songs
 
 Pass `room_id`.
 
-Emits `userAdded` with the new `room` object to all users in this room
+Emits `userChanged` with the new `room.num_people` to all users in this room

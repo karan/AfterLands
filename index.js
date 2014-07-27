@@ -51,6 +51,9 @@ app.post('/addsong', routes.addSong);
 // Search for songs on rdio
 app.get('/search', routes.searchSong);
 
+// Get details of a room
+app.get('/room/:room_id', routes.getRoom);
+
 var server = http.createServer(app);
 // Connect to socket
 var io = require('socket.io')(server);
@@ -65,7 +68,7 @@ io.sockets.on('connection', function (socket) {
     socket.partyRoom = room_id;
     socket.join(room_id);
     routes.userIncrease(room_id, function(room) {
-      io.sockets.in(room_id).emit('userChange', room);
+      io.sockets.in(room_id).emit('userChange', room.num_people);
     });
   });
 
@@ -90,7 +93,7 @@ io.sockets.on('connection', function (socket) {
     console.log("disconnect from" + room_id);
     if (room_id) {
       routes.userDecrease(room_id, function(room) {
-        io.sockets.in(room_id).emit('userChange', room);
+        io.sockets.in(room_id).emit('userChange', room.num_people);
       });
     }
   });
