@@ -132,3 +132,11 @@ exports.addVote = function(song_key, room_id, vote, callback) {
     }
   });
 }
+
+
+exports.removeSong = function(room_id) {
+  Room.findById(room_id, function(err, room) {
+    room.songs = room.songs.splice(0, 1);
+    room.save(function(err, r) {});
+  });
+}

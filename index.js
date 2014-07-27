@@ -89,6 +89,7 @@ io.sockets.on('connection', function (socket) {
 
   socket.on('nextSong', function(room_id) {
     console.log("NEXTSONG EMITTED");
+    routes.removeSong(room_id);
     io.sockets.in(room_id).emit('nextSong');
   });
 
