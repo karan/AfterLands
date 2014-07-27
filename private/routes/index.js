@@ -65,11 +65,14 @@ exports.addSong = function(req, res) {
   var room_id = req.body.room_id;
 
   Room.findById(room_id, function(err, room) {
-    require('./../helpers/mood.js').getMoods(song.artist, song.album, song.name, function(moods) {
+    require('./../helpers/mood').getMoods(song.artist, song.album, song.name, function(moods) {
       song.moods = moods;
-      room.songs.push(song);
-      room.save(function(err, r) {
-        res.send(200, r);
+      require('./../helpers/mode').mode(moods, function(mood) {
+        room.songs.push(song);
+        room.mood = mood;
+        room.save(function(err, r) {
+          res.send(200, r);
+        });
       });
     });
   });

@@ -20,6 +20,11 @@ var api = new Gracenote(clientId, clientTag, userId);
 // ]
 module.exports.getMoods = function(artistName, albumTitle, trackTitle, callback) {
   api.searchTrack(artistName, albumTitle, trackTitle, function(result) {
-    callback(result[0]['tracks'][0]['mood']);
+    var moods = result[0]['tracks'][0]['mood'];
+    var result = [];
+    for (var i = 0; i < moods.length; i++) {
+      result.push(moods[i].text);
+    }
+    callback(result);
   }, Gracenote.BEST_MATCH_ONLY);
 }
